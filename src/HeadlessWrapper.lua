@@ -2,6 +2,8 @@
 -- This wrapper allows the program to run headless on any OS (in theory)
 -- It can be run using a standard lua interpreter, although LuaJIT is preferable
 
+-- Resolve the script's own directory so dofile works regardless of CWD
+local scriptDir = debug.getinfo(1, "S").source:match("@(.*)[/\\]")
 
 -- Callbacks
 local callbackTable = { }
@@ -183,7 +185,7 @@ function require(name)
 end
 
 
-dofile("Launch.lua")
+dofile((scriptDir and scriptDir .. "/" or "") .. "Launch.lua")
 
 -- Prevents loading of ModCache
 -- Allows running mod parsing related tests without pushing ModCache
