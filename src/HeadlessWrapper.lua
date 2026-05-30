@@ -175,6 +175,9 @@ function GetCloudProvider(fullPath)
 end
 
 
+-- Enable require() for project modules
+package.path = package.path .. ";?.lua;?/init.lua;src/?.lua;src/?/init.lua"
+
 local l_require = require
 function require(name)
 	-- Hack to stop it looking for lcurl, which we don't really need

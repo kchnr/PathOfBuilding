@@ -6,6 +6,10 @@
 --
 
 local startTime = GetTime()
+
+-- Enable require() for project modules
+package.path = package.path .. ";?.lua;?/init.lua;src/?.lua;src/?/init.lua"
+
 APP_NAME = "Path of Building"
 
 SetWindowTitle(APP_NAME)
