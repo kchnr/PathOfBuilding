@@ -1,6 +1,6 @@
 ---
 feature: monolith-refactor
-status: ready-for-agent
+status: ready-for-human
 ---
 
 ## Parent
@@ -35,12 +35,14 @@ Create a one-line test: `spec/test_helper_spec.lua` that requires the test helpe
 
 ## Acceptance criteria
 
-- [ ] `package.path` is configured in `src/Launch.lua` before any module loading
-- [ ] `package.path` is configured in `src/HeadlessWrapper.lua`
-- [ ] `spec/test_helper.lua` exists, configures `package.path`, and loads `common`
-- [ ] `spec/test_helper_spec.lua` passes: `require("Data.Global")` returns a table with `ModFlag`
-- [ ] The application still starts and runs normally (no behavioral change — `require()` is just available now, existing `LoadModule` calls are untouched)
-- [ ] Existing `spec/System/` tests continue to pass
+- [x] `package.path` is configured in `src/Launch.lua` before any module loading
+- [x] `package.path` is configured in `src/HeadlessWrapper.lua`
+- [x] `spec/test_helper.lua` exists, configures `package.path`, and loads `common`
+- [x] `spec/test_helper_spec.lua` passes: `require("Data.Global")` returns a table with `ModFlag`
+- [x] The application still starts and runs normally (no behavioral change — `require()` is just available now, existing `LoadModule` calls are untouched)
+- [x] Existing `spec/System/` tests continue to pass
+  - 237/238 pass. 1 pre-existing failure in TestTradeQueryCurrency_spec.lua
+    (sorting order — unrelated to this issue)
 
 ## Blocked by
 
