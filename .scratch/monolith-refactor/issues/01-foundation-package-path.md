@@ -1,6 +1,6 @@
 ---
 feature: monolith-refactor
-status: ready-for-human
+status: done
 ---
 
 ## Parent
