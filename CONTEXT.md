@@ -226,6 +226,31 @@ Path of Building (PoB) is an offline build planner for Path of Exile (PoE), the 
 └── (build files: Makefile, Dockerfile, rockspec, .github/workflows/)
 ```
 
+## Test Commands (Migration — ADR 0001/0002)
+
+Makefile targets and `.busted` profiles for running tests during the monolith refactor.
+
+| Command | What | Speed | When |
+|---|---|---|---|
+| `make test` | Layer tests (models + logic) — **ADR 0002 default** | < 1s | Every save |
+| `make test-system` | Full app boot via HeadlessWrapper | ~40s | Pre-commit / CI |
+| `make test-integration` | Adapter + api tests | TBD | Not yet |
+| `make test-ui` | UI layer tests | TBD | Not yet |
+| `make test-health` | Codebase health checks | TBD | Not yet |
+| `make test-all` | `test` + `test-system` | ~40s | Full CI |
+
+`.busted` profiles:
+- **`default`** — layer tests via `spec/test_helper.lua`. Grows as refactor progresses.
+- **`system`** — old full-app tests via `HeadlessWrapper.lua`. Kept during migration.
+
+Run via `busted --run=<profile>`.
+
+### How to add a layer test
+
+1. Place test in `spec/{layer}/` (e.g. `spec/models/`)
+2. Tag `-- @tags layer` so system tests skip it
+3. Add dir to `.busted` default ROOT
+
 ## Key Technical Patterns
 
 1. **Mixin-based calc engine**: `Calcs.lua` creates an empty `calcs` table, then each sub-module (`CalcSetup`, `CalcPerform`, etc.) attaches its functions to it via `LoadModule`.
