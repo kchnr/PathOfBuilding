@@ -1,19 +1,27 @@
 return {
-    _all = {
-        coverage = false,
-        verbose = true,
-    },
-    default = {
-        directory = "src",
-        lpath = "../runtime/lua/?.lua;../runtime/lua/?/init.lua",
-        helper = "HeadlessWrapper.lua",
-        ROOT = { "../spec" },
-       	["exclude-tags"] = "builds",
-    },
-    generate = {
-        directory = "src",
-        lpath = "../runtime/lua/?.lua;../runtime/lua/?/init.lua",
-        helper = "HeadlessWrapper.lua",
-        ROOT = { "../spec/GenerateBuilds.lua" },
-    }
+	_all = {
+		coverage = false,
+		verbose = true,
+	},
+	-- ADR 0002: default = models + logic (< 1s)
+	default = {
+		helper = "spec/test_helper.lua",
+		ROOT = {
+			"spec/test_helper_spec.lua",
+		},
+	},
+	-- Old system tests (full app boot) — kept during migration
+	system = {
+		directory = "src",
+		lpath = "../runtime/lua/?.lua;../runtime/lua/?/init.lua",
+		helper = "HeadlessWrapper.lua",
+		ROOT = { "../spec" },
+		["exclude-tags"] = "builds",
+	},
+	generate = {
+		directory = "src",
+		lpath = "../runtime/lua/?.lua;../runtime/lua/?/init.lua",
+		helper = "HeadlessWrapper.lua",
+		ROOT = { "../spec/GenerateBuilds.lua" },
+	},
 }
