@@ -358,3 +358,15 @@ GlobalCache = {
 	cachedData = { MAIN = {}, CALCS = {}, CALCULATOR = {} },
 }
 
+return {
+	ModFlag = ModFlag,
+	KeywordFlag = KeywordFlag,
+	SkillType = SkillType,
+	colorCodes = colorCodes,
+	defaultColorCodes = defaultColorCodes,
+	GlobalCache = GlobalCache,
+	updateColorCode = updateColorCode,
+	hexToRGB = hexToRGB,
+	MatchKeywordFlags = MatchKeywordFlags,
+}
+
