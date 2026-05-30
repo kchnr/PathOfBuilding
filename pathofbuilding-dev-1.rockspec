@@ -3,7 +3,7 @@ package = "pathofbuilding"
 version = "dev-1"
 
 source = {
-    url = "git+https://github.com/PathOfBuildingCommunity/PathOfBuilding",
+   url = ".",
 }
 
 description = {
@@ -13,10 +13,15 @@ description = {
 }
 
 dependencies = {
-    "lua >= 5.1",
-    "luautf8",
+   "lua == 5.1",
+   "luautf8",
 }
 
 test_dependencies = {
-    "busted",
+   "busted",
+}
+
+build = {
+   type = "builtin",
+   modules = {}
 }
