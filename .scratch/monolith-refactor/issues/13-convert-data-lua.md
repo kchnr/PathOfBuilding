@@ -92,8 +92,4 @@ return data
 - [ ] The application starts and all game data is available (items, skills, tree, uniques, etc.)
 - [ ] Existing `spec/System/` tests continue to pass
 
-## Blocked by
 
-- [01-foundation-package-path](01-foundation-package-path.md)
-- [05-convert-modtools-itemtools](05-convert-modtools-itemtools.md)
-- [04-split-common-utilities](04-split-common-utilities.md)

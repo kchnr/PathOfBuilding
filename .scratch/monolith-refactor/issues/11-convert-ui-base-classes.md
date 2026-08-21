@@ -35,7 +35,4 @@ Every other UI class depends on Control and ControlHost. If the conversion break
 - [ ] The application starts and renders the UI normally
 - [ ] Existing `spec/System/` tests continue to pass
 
-## Blocked by
 
-- [01-foundation-package-path](01-foundation-package-path.md)
-- [04-split-common-utilities](04-split-common-utilities.md)

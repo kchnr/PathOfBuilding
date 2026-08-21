@@ -44,6 +44,4 @@ Create a one-line test: `spec/test_helper_spec.lua` that requires the test helpe
   - 237/238 pass. 1 pre-existing failure in TestTradeQueryCurrency_spec.lua
     (sorting order — unrelated to this issue)
 
-## Blocked by
 
-None — can start immediately.

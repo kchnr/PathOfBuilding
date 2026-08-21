@@ -124,10 +124,8 @@ The ultimate verification is that the application calculates the same DPS and st
 - [ ] All existing `spec/System/` tests continue to pass — especially TestAttacks, TestDefence, TestAilments, TestTriggers
 - [ ] No calc sub-module captures `calcs` as a global — every function receives what it needs as explicit parameters or from the module's own internal state
 
-## Blocked by
 
-- [01-foundation-package-path](01-foundation-package-path.md)
-- [04-split-common-utilities](04-split-common-utilities.md)
-- [05-convert-modtools-itemtools](05-convert-modtools-itemtools.md)
-- [06-convert-modstore-chain](06-convert-modstore-chain.md)
-- [08-convert-calctools-pantheon](08-convert-calctools-pantheon.md)
+
+## See also
+
+- The calc engine *decomposition* (splitting the shared-mutable-state engine into `logic/` functions) is **not** part of this slice — it is a later PRD phase. See the PRD's "Future phase: calc engine decomposition" planning notes for the build-optimizer driver, the shared-mutable-state challenge, the delta-caching preservation requirement, and the spike-first approach.

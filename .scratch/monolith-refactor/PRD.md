@@ -17,7 +17,33 @@ The consequence: tests take seconds each, writing new tests is prohibitively dif
 
 Restructure the codebase into the five-directory target architecture defined in ADR 0001 (`ui/`, `api/`, `models/`, `logic/`, `adapters/`) with strict one-way dependency rules and a standard Lua `require()` module system. Execute the migration incrementally using a strangler-fig pattern — old code continues working while new module boundaries are established one file at a time, each backed by layer-specific tests per ADR 0002.
 
-The migration is broken into phases, each producing a shippable application with zero behavioral regressions. Phase 0 establishes the module system infrastructure; subsequent phases extract modules bottom-up from pure data → pure functions → IO adapters → API boundary → UI features.
+The migration is broken into phases (see [Phases](#phases) below), each producing a shippable application with zero behavioral regressions. **Phase 1 (issues 01–14)** establishes the module system and converts every file to `require()` in place; **Phase 2+** (future PRDs) decomposes the calc engine, relocates files into the target directories, and extracts the adapter/api/ui boundaries.
+
+## Phases
+
+The migration is split into phases. **Issues 01–14 are Phase 1.** Phases 2+ are future PRDs, each with its own ADR.
+
+### Phase 1 — Module system + import-mechanism conversion (issues 01–14)
+
+Establish standard `require()` and convert **every** source file to a return-style module, **in place** (no directory moves yet). Each converted file both returns its table (for `require()`) and registers its legacy global (for unconverted consumers), per the dual-access decision. Files stay at current paths, so imports use current paths (e.g. `require("Data.Global")`, `require("Classes.ModStore")`), **not** the ADR 0001 target paths (`models.Global`). Target-path imports arrive in Phase 2 when files move.
+
+Phase 1 also installs the health gates: dependency-drift with monotonic-progress enforcement, and the no-new-globals freeze (issue 14 Parts C–D).
+
+**Outcome:** every source file is require-able in isolation; no behavioral change; the global namespace is frozen; the drift gate protects boundary progress. This is the prerequisite for all later extraction.
+
+Phase 1 deliberately does **not** decompose the calc engine, move files into `models/`/`logic/`/`adapters/`/`api/`/`ui/`, extract the `api/` boundary, or reorganize UI into feature directories. Those are Phase 2+.
+
+### Phase 2+ — Decomposition, restructuring, boundaries (future PRDs)
+
+Each item gets its own PRD + ADR + issues before implementation, per the iterative principle:
+
+- **Calc engine decomposition** — split the shared-mutable-state engine into `logic/` functions (see "Future phase: calc engine decomposition"). Driven by the build-optimization feature.
+- **Directory moves** — relocate converted files into `models/`, `logic/`, `adapters/`, `api/`, `ui/`; imports switch to target paths; the drift gate ruleset tightens to full ADR 0001.
+- **Adapter extraction** — `GameDataRepo`, `BuildRepo`, `PoeTradeClient` (user stories 16–18).
+- **API boundary** — the `api/` layer UI imports from (user stories 19–21).
+- **UI feature-directory reorganization** — `ui/{feature}/` Page/State/Controls (user stories 22–25; see "Future phase: UI feature-directory reorganization").
+
+The user stories below describe the **end state** across all phases; issues 01–14 deliver the Phase 1 subset.
 
 ## User Stories
 
@@ -172,3 +198,23 @@ ADR 0001 and ADR 0002 are the starting blueprint. As modules are extracted, boun
 ### Glossary vocabulary
 
 All PRDs, issues, commit messages, and design discussions use the terms defined in `CONTEXT.md`'s glossary. No synonyms are introduced.
+
+### Future driver: build optimization
+
+A planned future feature — automated build optimization / "find best builds" — runs the calculation engine many times (potentially thousands to millions of evaluations) while searching the build space. This is a primary motivating driver for the strict layering and for the calc-engine extraction, not merely a testability concern: the search needs to invoke calc functions in isolation, fast, with no coupling to IO, UI libraries, or other heavy dependencies. Performance here is not just "don't regress" — it must eventually be fast enough for search. This driver is recorded now so boundary and performance decisions throughout the migration are made with it in mind.
+
+### Future phase: calc engine decomposition
+
+Issue 09 converts only the calc engine's *import mechanism* (LoadModule → require). The actual decomposition — splitting the shared-mutable-state engine into `logic/` functions — is a later PRD phase and must be planned in detail before implementation:
+
+- **Challenge.** The engine is not a set of pure functions that happen to share a table; a calc pass deliberately mutates `env` / `actor.output` / `modDB` in place (e.g. `modDB:NewMod(...)` mid-pass). "Pure functions with explicit inputs" must be reconciled with this mutation-centric design rather than assumed.
+- **Preserve the delta optimization.** The parent-chain mod caching (`ModStore.parent`, `cachedPlayerDB`, delta passes) is load-bearing for recompute-on-every-keystroke performance and is also what makes repeated evaluations affordable for the future build optimizer. The decomposition must preserve it, and perf must be measured (not assumed) before and after.
+- **Spike first.** Before committing the phase, extract one sub-module (e.g. `doActorLifeMana`) into `logic/` with tests and report whether the shared-state model survives. Revise the approach based on findings.
+- **Behavior-preserving.** The existing `spec/System/` tests (TestAttacks, TestDefence, TestAilments, TestTriggers) are the regression net; no expected behavior changes. Add layer-specific tests iteratively as seams emerge.
+- **Dedicated ADR.** Write an ADR for the calc-engine decomposition before implementation, recording the spike findings and the chosen seam strategy.
+
+Detailed planning is deferred until issues 01–09 are complete, per the iterative principle.
+
+### Future phase: UI feature-directory reorganization
+
+Issues 11 and 12 convert UI class files to return-style modules (the import mechanism only). The feature-directory reorganization described in ADR 0001 (user stories 22–25 — `ui/{feature}/` with Page/State/Controls, shared controls in `ui/shared/`, UI importing only `api/`) is a later phase. It is a major effort — comparable to the calc-engine decomposition — because the UI is a flat control tree with peer-to-peer anchoring, multi-inheritance tabs, and cross-tab state reads. It deserves its own ADR and issue breakdown before implementation, and can proceed as its own organized track so work continues independently of the logic-side migration.

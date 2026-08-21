@@ -56,7 +56,8 @@ Automated, deterministic checks on the codebase itself — not application behav
 
 #### Gate checks (fail = merge blocked)
 
-- **Dependency drift** — fails if any source file imports across an ADR 0001 boundary. Binary: the import graph either respects the rules or it doesn't. Run as a pre-commit hook and CI gate.
+- **Dependency drift** — fails if any source file imports across an ADR 0001 boundary. Binary: the import graph either respects the rules or it doesn't. Run as a pre-commit hook and CI gate. Enforces **monotonic progress**: a committed baseline records the current compliance state and the gate fails on any regression against it (new violations blocked); the ruleset tightens over time via intentional baseline updates, rather than gating only on the final aspirational rules.
+- **No new globals** — fails if the set of project globals (assignments to names not declared `local` in `src/**/*.lua`) grows beyond a committed baseline captured at module-system bootstrap. Shrinking the set is always allowed (baseline updated downward intentionally). Guards the entire migration from issue 02 onward.
 - **Flakiness detection** — fails a specific test if it flips pass/fail more than 2 times in the last 10 CI runs. The test is quarantined (marked skipped) until fixed. Binary: a test is either flaky by the metric or it isn't.
 
 #### Advisory checks (fail = warning reported, merge allowed)
@@ -87,6 +88,7 @@ Every test must produce the same pass/fail result given the same code and inputs
 | `api/` | Real adapters, system clock | Inject fake adapters that return controlled data. Freeze time when api/ depends on it |
 | `ui/` | Event timing, rendering output | Control the event sequence explicitly. Drawing output is stubbed — never assert on pixel values, image loads, or screen coordinates |
 | `health/` | Dependency drift | Binary lint: same import graph → same result |
+| `health/` | No new globals | Same source → same global-assignment set. Baseline diff is deterministic |
 | `health/` | Flakiness | Fixed metric: N flips in M runs. Same history → same result. Requires CI run history |
 | `health/` | Coverage | Same code → same coverage numbers. Per-module floor stored in baselines |
 | `health/` | Performance | Same code on same runner type → same benchmarks within tolerance. Multiple runs (median of 5), compare against stored baseline |

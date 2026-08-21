@@ -84,8 +84,4 @@ end)
 - [ ] Existing `spec/System/` tests continue to pass
 - [ ] A `spec/logic/ModStore_spec.lua` test passes with plain busted (no HeadlessWrapper)
 
-## Blocked by
 
-- [01-foundation-package-path](01-foundation-package-path.md)
-- [04-split-common-utilities](04-split-common-utilities.md) — need `copyTable` and other utilities available via require for busted tests
-- [05-convert-modtools-itemtools](05-convert-modtools-itemtools.md) — ModStore requires `modLib` to be require-able

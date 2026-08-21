@@ -62,9 +62,17 @@ Create `spec/health/dependency_drift_spec.lua` that scans all `require()` calls 
 
 For this slice, the health check starts with "no `require()` to `Classes/` from outside the UI layer" and "no `require()` to `Modules/` from Classes/ that isn't a utility" — relaxed rules that tighten as restructuring progresses in future PRDs.
 
+**Monotonic progress enforcement.** The drift gate does not merely check against the final aspirational ADR 0001 rules (which the codebase won't satisfy until late in the migration). Instead it enforces monotonic progress: it captures the current boundary-compliance state as a committed baseline (`spec/health/baselines/dependency_drift_baseline.json`) and **fails on any regression** — a file/edge that previously complied with the current ruleset now violates it. New violations are blocked; the ruleset itself may be tightened over time by intentionally updating the baseline. This protects work already done rather than describing a dreamt-of end state.
+
 ### Verification
 
 Run the full application and verify every feature works: build list → load/edit build → all tabs → save → switch builds. The existing system tests serve as the regression suite.
+
+### Part D: No-new-globals freeze gate
+
+Add `spec/health/no_new_globals_spec.lua` — a gate that prevents the project global namespace from growing. Once the module system exists, every new dependency must be a `require()`, not a new global.
+
+The gate scans `src/**/*.lua` for global assignments (top-level assignments to names not declared `local` — bare `Foo = ...`, leaked function/field writes, etc.), compares the discovered set against a committed baseline (`spec/health/baselines/globals_baseline.json`) captured at issue 01 completion, and fails if the set has grown. Shrinking the set (removing globals as modules convert) is always allowed; the baseline is updated downward intentionally.
 
 ## Acceptance criteria
 
@@ -90,18 +98,14 @@ Run the full application and verify every feature works: build list → load/edi
 - [ ] `spec/health/dependency_drift_spec.lua` exists and scans all `require()` calls
 - [ ] Fails CI if any `require()` violates relaxed ADR 0001 rules (e.g., `Classes/` importing from `Modules/` in non-utility cases)
 - [ ] Runs as a CI gate (`busted --run health`)
+- [ ] Monotonic progress: a committed baseline records current compliance; the gate fails on any regression against the baseline (new violations blocked), with the ruleset tightenable via intentional baseline updates
 
-## Blocked by
+### Part D
 
-### Part A
-- All previous issues (01 through 13)
-
-### Part B
-- Part A complete
-- Verification that no globals are captured
-
-### Part C
-- Part B complete
+- [ ] `spec/health/no_new_globals_spec.lua` scans `src/**/*.lua` for global assignments
+- [ ] A committed baseline (`spec/health/baselines/globals_baseline.json`) captures the global set as of issue 01
+- [ ] Gate fails if the global set grows beyond the baseline; shrinking is allowed (baseline updated downward intentionally)
+- [ ] Runs as a CI gate (`busted --run health`)
 
 ## Note
 

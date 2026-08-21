@@ -43,6 +43,8 @@ return copyTable
 
 This module has zero dependencies (only Lua stdlib). Register `_G.copyTable = require("Modules.CopyTable")` in Main.lua for backward compat.
 
+**Note:** `CopyTable.lua` is the canonical home for `copyTable`. Issue 04's `Utils.lua` re-exports it (`Utils.copyTable = require("Modules.CopyTable")`) rather than redefining it, so there is a single definition.
+
 **Step 2 — Convert Global.lua.** Wrap the file contents in a local table:
 
 ```lua
@@ -118,6 +120,4 @@ end)
 - [ ] The application starts, loads builds, and calculates stats normally (no behavioral change)
 - [ ] Existing `spec/System/` tests continue to pass
 
-## Blocked by
 
-- [01-foundation-package-path](01-foundation-package-path.md)

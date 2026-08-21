@@ -21,9 +21,11 @@ Split `src/Modules/Common.lua` into two parts: pure utility functions (extractab
 
 ### What moves to a new `src/Modules/Utils.lua`
 
+**Note on `copyTable`:** `copyTable` already has a canonical home in `src/Modules/CopyTable.lua` (issue 02). Do **not** redefine it in `Utils.lua`. Instead re-export: `Utils.copyTable = require("Modules.CopyTable")`. `copyTableSafe` (not in CopyTable.lua) is defined directly in `Utils.lua`.
+
 Pure functions with only Lua stdlib dependencies:
 
-- `copyTable`, `copyTableSafe`
+- `copyTableSafe` (`copyTable` stays canonical in `Modules.CopyTable` from issue 02; `Utils.lua` re-exports it — see note above)
 - `round`, `formatValue`, `formatNumSep`, `formatRound`, `formatPercent`, `formatSec`
 - `tableConcat`, `tableDeepEquals`
 - `pairsYield` (depends on `GetTime` global... check this)
@@ -69,7 +71,4 @@ formatValue = Utils.formatValue
 - [ ] Existing `spec/System/` tests continue to pass
 - [ ] A `spec/logic/Utils_spec.lua` test can be written with plain busted: `require("spec.test_helper"); local Utils = require("Modules.Utils")`
 
-## Blocked by
 
-- [01-foundation-package-path](01-foundation-package-path.md)
-- [02-convert-global-lua](02-convert-global-lua.md) — the pattern is proven by Global.lua first, and `copyTable` extraction in issue 02 is a subset of this work

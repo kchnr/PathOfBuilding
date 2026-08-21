@@ -33,8 +33,4 @@ These files are low risk because they're data definitions consumed primarily by 
 - [ ] The application starts and the Config tab displays options normally
 - [ ] Existing `spec/System/` tests continue to pass
 
-## Blocked by
 
-- [01-foundation-package-path](01-foundation-package-path.md)
-- [04-split-common-utilities](04-split-common-utilities.md)
-- [05-convert-modtools-itemtools](05-convert-modtools-itemtools.md)

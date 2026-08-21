@@ -35,6 +35,4 @@ Identify what CalcFormat currently exports — it may export formatting function
 - [ ] The application starts and runs normally (no behavioral change)
 - [ ] Existing `spec/System/` tests continue to pass
 
-## Blocked by
 
-- [01-foundation-package-path](01-foundation-package-path.md)

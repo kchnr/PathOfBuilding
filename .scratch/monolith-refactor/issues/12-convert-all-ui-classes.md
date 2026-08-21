@@ -55,12 +55,7 @@ The application UI is fully functional: all tabs render, all controls respond to
 - [ ] Builds can be created, edited, saved, and loaded
 - [ ] Existing `spec/System/` tests continue to pass
 
-## Blocked by
 
-- [11-convert-ui-base-classes](11-convert-ui-base-classes.md)
-- [05-convert-modtools-itemtools](05-convert-modtools-itemtools.md)
-- [02-convert-global-lua](02-convert-global-lua.md)
-- [10-convert-item-lua](10-convert-item-lua.md)
 
 ## Note
 

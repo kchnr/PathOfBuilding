@@ -40,9 +40,4 @@ After conversion, a `spec/logic/CalcTools_spec.lua` test proves the module loads
 - [ ] Existing `spec/System/` tests continue to pass
 - [ ] A `spec/logic/CalcTools_spec.lua` test passes with plain busted (no HeadlessWrapper)
 
-## Blocked by
 
-- [01-foundation-package-path](01-foundation-package-path.md)
-- [04-split-common-utilities](04-split-common-utilities.md)
-- [05-convert-modtools-itemtools](05-convert-modtools-itemtools.md)
-- [06-convert-modstore-chain](06-convert-modstore-chain.md)

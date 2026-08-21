@@ -58,7 +58,4 @@ Both follow the exact same conversion pattern: a global table with attached func
 - [ ] Existing `spec/System/` tests continue to pass
 - [ ] `require("Modules.ModTools")` returns the same table as the global `modLib` (testable with busted after issue 02 is done)
 
-## Blocked by
 
-- [01-foundation-package-path](01-foundation-package-path.md)
-- [02-convert-global-lua](02-convert-global-lua.md) — Global.lua must be converted first as the POC pattern
